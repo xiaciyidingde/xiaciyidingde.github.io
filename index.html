@@ -1,0 +1,279 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>夏次一定de</title><meta name="author" content="夏次一定de"><meta name="copyright" content="夏次一定de"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="技术宅拯救世界">
+<meta property="og:type" content="website">
+<meta property="og:title" content="夏次一定de">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="夏次一定de">
+<meta property="og:description" content="技术宅拯救世界">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.png">
+<meta property="article:author" content="夏次一定de">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "夏次一定de",
+  "alternateName": [
+    "example.com"
+  ],
+  "url": "http://example.com/"
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '夏次一定de',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url(/img/img.jpeg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">夏次一定de</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">夏次一定de</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="post_cover left"><a href="/2025/10/11/hello-world/" title="江西应用校园网工具 v2.5.0 使用说明"><img class="post-bg" src="/img/loading.gif" data-original="/img/1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="江西应用校园网工具 v2.5.0 使用说明"></a></div><div class="recent-post-info"><a class="article-title" href="/2025/10/11/hello-world/" title="江西应用校园网工具 v2.5.0 使用说明">江西应用校园网工具 v2.5.0 使用说明</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-10-11T08:53:51.000Z" title="发表于 2025-10-11 16:53:51">2025-10-11</time></span></div><div class="content">江西应用校园网工具 v2.5.0 使用说明📄 软件信息软件名称：江西应用校园网工具版本号：v2.5.0开发者：夏次一定de版权声明：2025 夏次一定de. 所有权利保留。 🚀 软件介绍与功能本工具专为江西应用技术职业学院的校园网用户设计，用于实现校园网的全自动登录。 核心功能：  自动完成校园网认证登录 支持开机自启动（需手动启用） 登录后程序最小化至系统托盘，安静运行，不打扰您的工作学习 提供便捷的系统托盘菜单，方便您随时查看或操作  重要提示：  本工具仅负责自动登录认证，无法代替您进行物理连接 您需要确保设备已成功连接到校园网络（Wi-Fi 或 有线网）  📖 使用方法软件安装与准备 解压软件  如果收到的是zip格式的压缩文件，请将其解压到一个指定目录中 建议：不要直接解压到桌面，建议创建专门的程序文件夹 解压后，可以将主程序的快捷方式发送到桌面，方便日后使用   安全验证  在运行程序前，请确认文件的SHA256值为：74d5ff07417e3a2b9bb105f5d303dbaaf73fb443adee0a0d4f3d89082a3b87c3 如数值不符，请立...</div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">夏次一定de</div><div class="author-info-description"> 技术宅拯救世界</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com"><i class="fab fa-github"></i><span>关注我</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这是我的博客</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/10/11/hello-world/" title="江西应用校园网工具 v2.5.0 使用说明"><img src="/img/loading.gif" data-original="/img/1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="江西应用校园网工具 v2.5.0 使用说明"/></a><div class="content"><a class="title" href="/2025/10/11/hello-world/" title="江西应用校园网工具 v2.5.0 使用说明">江西应用校园网工具 v2.5.0 使用说明</a><time datetime="2025-10-11T08:53:51.000Z" title="发表于 2025-10-11 16:53:51">2025-10-11</time></div></div></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/10/">
+            <span class="card-archive-list-date">
+              十月 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">1</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-10-11T08:46:01.635Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2020 - 2025 By 夏次一定de</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.1"></script><script src="/js/main.js?v=5.5.1"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: str => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, null))
+  },
+  run: subtitleType => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        btf.getScript('https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  },
+  processSubtitle: (content, extraContents = []) => {
+    if (true) {
+      const sub = ["我在江西应职院。","你在哪。","大一新生报道。","在学习面向对象编程时，因为没有对象，所以不学了。","我敲下了#include <幸福>，却发现该头文件不存在。","哲学家说“人不能两次踏进同一条河流”，但我的代码Bug可以。","在二叉树中寻找最短路径，却想起了那些绕远路也甘之如饴的傍晚。","我在人生的代码库中执行git log，却找不到最初的那个commit。","我用递归函数计算无限，栈溢出那一刻，懂了什么叫执念太深。","时光如同UDP包，重要的事总是丢包，琐事却反复重传。","梦想的二进制文件缺少执行权限，只能在沙箱里模拟运行。","尝试优化人生的算法，却发现最大的时间开销花在了等待与加载。","指针的意义在于指向，无论它指向的是内存地址，还是你前进的方向。","你的承诺像一段被弃用的API，虽然还能调用，但已不再被官方支持。","系统告诉我发生了死锁，两个进程都在互相等待。我看了看我们，沉默了。","我向宇宙发送了一个SYN包，然后用一生等待那个ACK。","我调用了一个阻塞接口，整个生命进程都在等待一个永不返回的信号。","面向对象的核心是封装与继承。我封装了所有情绪，却不知该向谁继承。","我试图为生活定义一个清晰的接口，却发现所有方法都抛出了“未知异常”。","你的承诺在编译期完美通过，却在运行时抛出空指针异常","我试图对生活进行多线程优化，却发现上下文切换的成本，远比想象中高昂。","深夜的思绪像野指针，在大脑的地址空间里漫无目的地解引用。","人生没有垃圾回收（GC），那些该被遗忘的，总在内存中悄然驻留。","我努力扮演一个稳定的内核，却总被来自外部的硬件中断所打扰。","幸福这趟列车，似乎总遵循着某种我无法破解的调度算法。","信仰是唯一的全局变量，在程序结束前拒绝被垃圾回收。","孤独是运行在后台的守护进程，安静地消耗着所有空闲的CPU周期。","存在本身，或许就是宇宙代码里一个无法被捕获的异步事件。","我们都在各自的协程中运行，偶尔通过名为“相遇”的通道交换数据。","生活的复杂度始终是O(n)，无论怎么优化，都要一步一步执行。","在情绪的并发访问中，我始终无法为那颗心加上合适的锁。","你的离开，像一次干净的垃圾回收，释放了空间却改变了整个堆的布局。","我在灵魂的终端输入find . -name \"幸福\" -print，搜索了整个文件系统却返回了空值。","人生就像没有断点的调试，只能看着变量在眼皮底下悄悄改变。","深夜的思绪像段恶意代码，不断递归直到栈溢出。","理想这个依赖库始终无法从现实仓库中拉取。","记忆的索引渐渐碎片化，最想读取的数据总是寻道时间最长。","孤独是个守护进程，kill不掉也attach不上。","存在或是段自修改代码，在运行时不断重写自己的指令。","我在人生的代码库中执行git blame，却发现所有错误都指向自己。","你的目光像段精准的SQL注入，绕过了我所有身份验证。","孤独这个服务始终监听0.0.0.0，却拒绝所有连接请求。","我们像两个冲突的git分支，永远找不到合并的基准点。","生活就像没有文档的SDK，每个方法都要靠猜测去调用。","人生就像没有ctrl+z的文本编辑器，每个字符都成了既定事实。","情绪这个容器不断扩容，却始终装不下所有的喜怒哀乐","梦想在持续集成中不断构建失败，日志里写满环境依赖问题","在情绪的调用栈里，递归深度早已超过预设值"].slice()
+
+      if (extraContents.length > 0) {
+        sub.unshift(...extraContents)
+      }
+
+      if (typeof content === 'string') {
+        sub.unshift(content)
+      } else if (Array.isArray(content)) {
+        sub.unshift(...content)
+      }
+
+      sub.length > 0 && typedJSFn.init(sub)
+    } else {
+      document.getElementById('subtitle').textContent = typeof content === 'string' ? content :
+        (Array.isArray(content) && content.length > 0 ? content[0] : '')
+    }
+  }
+}
+btf.addGlobalFn('pjaxSendOnce', () => { typed.destroy() }, 'typedDestroy')
+</script><script>function subtitleType () {
+  typedJSFn.processSubtitle(["我在江西应职院。","你在哪。","大一新生报道。","在学习面向对象编程时，因为没有对象，所以不学了。","我敲下了#include <幸福>，却发现该头文件不存在。","哲学家说“人不能两次踏进同一条河流”，但我的代码Bug可以。","在二叉树中寻找最短路径，却想起了那些绕远路也甘之如饴的傍晚。","我在人生的代码库中执行git log，却找不到最初的那个commit。","我用递归函数计算无限，栈溢出那一刻，懂了什么叫执念太深。","时光如同UDP包，重要的事总是丢包，琐事却反复重传。","梦想的二进制文件缺少执行权限，只能在沙箱里模拟运行。","尝试优化人生的算法，却发现最大的时间开销花在了等待与加载。","指针的意义在于指向，无论它指向的是内存地址，还是你前进的方向。","你的承诺像一段被弃用的API，虽然还能调用，但已不再被官方支持。","系统告诉我发生了死锁，两个进程都在互相等待。我看了看我们，沉默了。","我向宇宙发送了一个SYN包，然后用一生等待那个ACK。","我调用了一个阻塞接口，整个生命进程都在等待一个永不返回的信号。","面向对象的核心是封装与继承。我封装了所有情绪，却不知该向谁继承。","我试图为生活定义一个清晰的接口，却发现所有方法都抛出了“未知异常”。","你的承诺在编译期完美通过，却在运行时抛出空指针异常","我试图对生活进行多线程优化，却发现上下文切换的成本，远比想象中高昂。","深夜的思绪像野指针，在大脑的地址空间里漫无目的地解引用。","人生没有垃圾回收（GC），那些该被遗忘的，总在内存中悄然驻留。","我努力扮演一个稳定的内核，却总被来自外部的硬件中断所打扰。","幸福这趟列车，似乎总遵循着某种我无法破解的调度算法。","信仰是唯一的全局变量，在程序结束前拒绝被垃圾回收。","孤独是运行在后台的守护进程，安静地消耗着所有空闲的CPU周期。","存在本身，或许就是宇宙代码里一个无法被捕获的异步事件。","我们都在各自的协程中运行，偶尔通过名为“相遇”的通道交换数据。","生活的复杂度始终是O(n)，无论怎么优化，都要一步一步执行。","在情绪的并发访问中，我始终无法为那颗心加上合适的锁。","你的离开，像一次干净的垃圾回收，释放了空间却改变了整个堆的布局。","我在灵魂的终端输入find . -name \"幸福\" -print，搜索了整个文件系统却返回了空值。","人生就像没有断点的调试，只能看着变量在眼皮底下悄悄改变。","深夜的思绪像段恶意代码，不断递归直到栈溢出。","理想这个依赖库始终无法从现实仓库中拉取。","记忆的索引渐渐碎片化，最想读取的数据总是寻道时间最长。","孤独是个守护进程，kill不掉也attach不上。","存在或是段自修改代码，在运行时不断重写自己的指令。","我在人生的代码库中执行git blame，却发现所有错误都指向自己。","你的目光像段精准的SQL注入，绕过了我所有身份验证。","孤独这个服务始终监听0.0.0.0，却拒绝所有连接请求。","我们像两个冲突的git分支，永远找不到合并的基准点。","生活就像没有文档的SDK，每个方法都要靠猜测去调用。","人生就像没有ctrl+z的文本编辑器，每个字符都成了既定事实。","情绪这个容器不断扩容，却始终装不下所有的喜怒哀乐","梦想在持续集成中不断构建失败，日志里写满环境依赖问题","在情绪的调用栈里，递归深度早已超过预设值"])
+}
+typedJSFn.run(subtitleType)</script><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = `%%{init:{ 'theme':'${theme}'}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (false) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.0/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-show-text.min.js" data-mobile="false" data-text="富强,民主,文明,和谐,平等,公正,法治,爱国,敬业,诚信,友善" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
