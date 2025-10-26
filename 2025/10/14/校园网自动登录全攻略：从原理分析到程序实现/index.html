@@ -1,0 +1,295 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>校园网自动登录全攻略：从原理分析到程序实现 | 夏次一定de</title><meta name="author" content="夏次一定de"><meta name="copyright" content="夏次一定de"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="每次在校园中使用网络时，都需要打开浏览器手动登录，还是太吃操作了，所以就有了这篇blog，记录我是如何实现校园网自动登录的。 一、DR.com 校园网登录原理分析我们学校采用的是 DR.com 校园网认证系统，其登录机制基于 HTTP 协议。当用户访问登录页面时，实际上是向认证服务器发送包含用户凭证的 GET 请求来完成身份验证。 核心认证流程十分简明：客户端收集用户信息（包括账号、密码和 IP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="校园网自动登录全攻略：从原理分析到程序实现">
+<meta property="og:url" content="http://8.149.137.124/2025/10/14/%E6%A0%A1%E5%9B%AD%E7%BD%91%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E5%85%A8%E6%94%BB%E7%95%A5%EF%BC%9A%E4%BB%8E%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E5%88%B0%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="夏次一定de">
+<meta property="og:description" content="每次在校园中使用网络时，都需要打开浏览器手动登录，还是太吃操作了，所以就有了这篇blog，记录我是如何实现校园网自动登录的。 一、DR.com 校园网登录原理分析我们学校采用的是 DR.com 校园网认证系统，其登录机制基于 HTTP 协议。当用户访问登录页面时，实际上是向认证服务器发送包含用户凭证的 GET 请求来完成身份验证。 核心认证流程十分简明：客户端收集用户信息（包括账号、密码和 IP">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://8.149.137.124/img/%E6%A0%A1%E5%9B%AD%E7%BD%91%E7%99%BB%E5%BD%95%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/0.png">
+<meta property="article:published_time" content="2025-10-14T10:11:06.000Z">
+<meta property="article:modified_time" content="2025-10-17T16:26:41.000Z">
+<meta property="article:author" content="夏次一定de">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://8.149.137.124/img/%E6%A0%A1%E5%9B%AD%E7%BD%91%E7%99%BB%E5%BD%95%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/0.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "校园网自动登录全攻略：从原理分析到程序实现",
+  "url": "http://8.149.137.124/2025/10/14/%E6%A0%A1%E5%9B%AD%E7%BD%91%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E5%85%A8%E6%94%BB%E7%95%A5%EF%BC%9A%E4%BB%8E%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E5%88%B0%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0/",
+  "image": "http://8.149.137.124/img/%E6%A0%A1%E5%9B%AD%E7%BD%91%E7%99%BB%E5%BD%95%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/0.png",
+  "datePublished": "2025-10-14T10:11:06.000Z",
+  "dateModified": "2025-10-17T16:26:41.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "夏次一定de",
+      "url": "http://8.149.137.124"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://8.149.137.124/2025/10/14/%E6%A0%A1%E5%9B%AD%E7%BD%91%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E5%85%A8%E6%94%BB%E7%95%A5%EF%BC%9A%E4%BB%8E%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E5%88%B0%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '校园网自动登录全攻略：从原理分析到程序实现',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/%E6%A0%A1%E5%9B%AD%E7%BD%91%E7%99%BB%E5%BD%95%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/0.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">夏次一定de</span></a><a class="nav-page-title" href="/"><span class="site-name">校园网自动登录全攻略：从原理分析到程序实现</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">校园网自动登录全攻略：从原理分析到程序实现</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-14T10:11:06.000Z" title="发表于 2025-10-14 18:11:06">2025-10-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-17T16:26:41.000Z" title="更新于 2025-10-18 00:26:41">2025-10-18</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>每次在校园中使用网络时，都需要打开浏览器手动登录，还是太吃操作了，所以就有了这篇blog，记录我是如何实现校园网自动登录的。</p>
+<h2 id="一、DR-com-校园网登录原理分析"><a href="#一、DR-com-校园网登录原理分析" class="headerlink" title="一、DR.com 校园网登录原理分析"></a>一、DR.com 校园网登录原理分析</h2><p>我们学校采用的是 DR.com 校园网认证系统，其登录机制基于 HTTP 协议。当用户访问登录页面时，实际上是向认证服务器发送包含用户凭证的 GET 请求来完成身份验证。</p>
+<p>核心认证流程十分简明：客户端收集用户信息（包括账号、密码和 IP 地址），通过特定格式的 URL 参数发送至认证服务器，服务器验证后返回登录结果。</p>
+<p>这种设计架构的优势在于实现简单，但缺点也十分明显——所有敏感信息均以明文传输，存在显著的安全隐患。然而，在校园内网环境中，这种简洁性反而为我们开发自动登录工具提供了便利条件。</p>
+<h2 id="二、数据包抓取与分析实战"><a href="#二、数据包抓取与分析实战" class="headerlink" title="二、数据包抓取与分析实战"></a>二、数据包抓取与分析实战</h2><h3 id="1-准备工作"><a href="#1-准备工作" class="headerlink" title="1. 准备工作"></a>1. 准备工作</h3><p>我选择的抓包工具是“科来网络分析系统 技术交流版”，可从官网下载：<a target="_blank" rel="noopener" href="https://www.colasoft.com.cn/downloads/capsa">https://www.colasoft.com.cn/downloads/capsa</a><br><img src="/img/loading.gif" data-original="/img/校园网登录原理分析/软件1.png" alt="抓包图" width="100%"><br>科来网络分析系统是一款集成数据包采集、协议解码分析、流量统计、故障诊断与性能管理于一体的专业工具，能够提供高精度的网络诊断分析，多层次展现网络通信全景。</p>
+<p>其他工具如 Wireshark、Fiddler 等也可以用，操作步骤基本相似。但科来系统在数据可视化方面更为友好，更适合初学者。</p>
+<h3 id="2-抓包步骤详解"><a href="#2-抓包步骤详解" class="headerlink" title="2. 抓包步骤详解"></a>2. 抓包步骤详解</h3><p>环境配置</p>
+<ul>
+<li>启动科来网络分析系统，选择“实时抓包”功能  </li>
+<li>根据网络类型选择对应接口：有线网络选“以太网”，无线网络选“WLAN”<img src="/img/loading.gif" data-original="/img/校园网登录原理分析/抓包1.png" alt="抓包图" width="100%"></li>
+</ul>
+<p>数据捕获</p>
+<ul>
+<li>开始抓包  </li>
+<li>在浏览器中访问校园网登录地址（我们学校登录网址为： <code>192.168.40.2</code>）  </li>
+<li>输入账号密码完成登录操作  </li>
+<li>返回科来系统停止抓包</li>
+</ul>
+<p>数据分析</p>
+<ul>
+<li>应用过滤器：<code>dstip = 192.168.40.2</code>  <img src="/img/loading.gif" data-original="/img/校园网登录原理分析/抓包3.png" alt="抓包图" width="100%"></li>
+<li>在数据包列表中查找包含 “GET” 和 “login” 关键词的数据包  <img src="/img/loading.gif" data-original="/img/校园网登录原理分析/抓包4.png" alt="抓包图" width="100%"></li>
+<li>如果你不会分析数据包，那么就复制数据包的 HEX 格式内容，发给AI让他分析。<img src="/img/loading.gif" data-original="/img/校园网登录原理分析/抓包5.png" alt="抓包图" width="100%"></li>
+</ul>
+<h3 id="3-数据包解析"><a href="#3-数据包解析" class="headerlink" title="3. 数据包解析"></a>3. 数据包解析</h3><p>通过分析捕获的数据包，我们可以发现登录请求数据包如下：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/eportal/portal/login?callback=dr1003&amp;login_method=1&amp;user_account=%2C0%2C“学号”%40telecom&amp;user_password=密码&amp;wlan_user_ip=xx.xx.xx.xx&amp;wlan_user_ipv6=&amp;wlan_user_mac=000000000000&amp;wlan_ac_ip=&amp;wlan_ac_name=&amp;jsVersion=4.2&amp;terminal_type=1&amp;lang=zh-cn&amp;v=5616&amp;lang=zh</span> <span class="meta">HTTP/1.1</span></span><br></pre></td></tr></table></figure>
+
+<p>其实观察url信息就可以发现，这些信息都是明文显示，可以看到account&#x3D;%2C0%2C“学号”%40telecom这一栏，我查了编码发现%2C表示“，”，%40表示“@”，telecom是电信的标志，user_password就是密码，wlan_user_ip则为ip地址，现在，用于登录的所有信息都齐了，只差代码了。</p>
+<p>请求包含以下关键参数：</p>
+<ul>
+<li><code>user_account</code>：用户名（学号+运营商后缀）  </li>
+<li><code>user_password</code>：用户密码（不改密码的话就是身份证后6位）  </li>
+<li><code>wlan_user_ip</code>：用户当前获取的 IP 地址</li>
+</ul>
+<p>安全警示：所有这些信息均以明文传输！若有人截获你的登录数据包，即可获取学号和密码。但这些凭证与学校其他系统通用，所以会导致更严重的个人信息泄露。</p>
+<h2 id="三、自动登录程序开发"><a href="#三、自动登录程序开发" class="headerlink" title="三、自动登录程序开发"></a>三、自动登录程序开发</h2><p>理解了登录原理并完成数据包分析后，写程序就变得相对简单了。</p>
+<h3 id="方法一：快速实现"><a href="#方法一：快速实现" class="headerlink" title="方法一：快速实现"></a>方法一：快速实现</h3><p>直接问AI：</p>
+<p>提问模板：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">请基于以下GET请求，用Python编写登录脚本：</span><br><span class="line">GET /eportal/portal/login?callback=dr1003&amp;login_method=1&amp;user_account=%2C0%2C“学号”&amp;user_password=密码&amp;wlan_user_ip=xx.xx.xx.xx&amp;wlan_user_ipv6=&amp;wlan_user_mac=000000000000&amp;wlan_ac_ip=&amp;wlan_ac_name=&amp;jsVersion=4.2&amp;terminal_type=1&amp;lang=zh-cn&amp;v=5616&amp;lang=zh HTTP/1.1</span><br></pre></td></tr></table></figure>
+<p>如需验证登录是否成功，可提向AI供服务器响应数据包，让AI分析并修改代码。</p>
+<h3 id="方法二：系统学习"><a href="#方法二：系统学习" class="headerlink" title="方法二：系统学习"></a>方法二：系统学习</h3><p>系统学习python等高级语言后自己写：</p>
+<p>需要学习</p>
+<ul>
+<li><code>Python</code>基础语法  </li>
+<li><code>requests</code>,<code>threading</code>等很多库  </li>
+<li>GUI库（<code>tkinter</code>,<code>PyQt</code>）  </li>
+<li>程序打包(<code>pyinstall</code>,<code>Nuitka</code>)</li>
+</ul>
+<p>进阶功能建议：</p>
+<ul>
+<li>自动检测网络连接状态  </li>
+<li>断线自动重连机制  </li>
+<li>图形化用户界面  </li>
+<li>开机自启动功能（最重要）</li>
+</ul>
+<p>完整学习周期大概 2-3 个月。<br>然后你就可以独自完成如下图差不多的程序。（江西应用校园网工具v2.5.0工具主界面）<br><img src="/img/loading.gif" data-original="/img/校园网登录原理分析/界面1.png" alt="江西应用校园网工具v2.5.0工具主界面" width="50%"></p>
+<p>以下是基础自动登录脚本示例（仅作学习与演示用途）：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">SERVER_ADDRESS = <span class="string">&quot;192.168.40.2&quot;</span></span><br><span class="line">SERVER_PORT = <span class="string">&quot;801&quot;</span></span><br><span class="line">USERNAME = <span class="string">&quot;xx&quot;</span></span><br><span class="line">PASSWORD = <span class="string">&quot;xx&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CampusPortalLogin</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.base_url = <span class="string">f&quot;http://<span class="subst">&#123;SERVER_ADDRESS&#125;</span>:<span class="subst">&#123;SERVER_PORT&#125;</span>&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>.username = USERNAME</span><br><span class="line">        <span class="variable language_">self</span>.password = PASSWORD</span><br><span class="line">        </span><br><span class="line">        <span class="variable language_">self</span>.headers = &#123;</span><br><span class="line">            <span class="string">&#x27;Host&#x27;</span>: <span class="string">f&#x27;<span class="subst">&#123;SERVER_ADDRESS&#125;</span>:<span class="subst">&#123;SERVER_PORT&#125;</span>&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;Accept&#x27;</span>: <span class="string">&#x27;*/*&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;Referer&#x27;</span>: <span class="string">f&#x27;http://<span class="subst">&#123;SERVER_ADDRESS&#125;</span>/&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_local_ip</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line">            s.connect((<span class="string">&quot;8.8.8.8&quot;</span>, <span class="number">80</span>))</span><br><span class="line">            ip = s.getsockname()[<span class="number">0</span>]</span><br><span class="line">            s.close()</span><br><span class="line">            <span class="keyword">return</span> ip</span><br><span class="line">        <span class="keyword">except</span> Exception:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">login</span>(<span class="params">self</span>):</span><br><span class="line">        local_ip = <span class="variable language_">self</span>.get_local_ip()</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> local_ip:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">            </span><br><span class="line">        <span class="comment">#其实URL参数只需要用户名，密码，ip就行，没有其他参数也不影响登录。</span></span><br><span class="line">        params = &#123;</span><br><span class="line">            <span class="string">&#x27;callback&#x27;</span>: <span class="string">&#x27;dr1003&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;login_method&#x27;</span>: <span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;user_account&#x27;</span>: <span class="string">f&#x27;,0,<span class="subst">&#123;self.username&#125;</span>@telecom&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;user_password&#x27;</span>: <span class="variable language_">self</span>.password,</span><br><span class="line">            <span class="string">&#x27;wlan_user_ip&#x27;</span>: local_ip,</span><br><span class="line">            <span class="string">&#x27;wlan_user_ipv6&#x27;</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;wlan_user_mac&#x27;</span>: <span class="string">&#x27;000000000000&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;wlan_ac_ip&#x27;</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;wlan_ac_name&#x27;</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;jsVersion&#x27;</span>: <span class="string">&#x27;4.2&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;terminal_type&#x27;</span>: <span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;lang&#x27;</span>: <span class="string">&#x27;zh-cn&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;v&#x27;</span>: <span class="string">&#x27;5616&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            requests.get(<span class="string">f&quot;<span class="subst">&#123;self.base_url&#125;</span>/eportal/portal/login&quot;</span>, </span><br><span class="line">                        params=params, headers=<span class="variable language_">self</span>.headers, timeout=<span class="number">10</span>)</span><br><span class="line">        <span class="keyword">except</span> requests.exceptions.RequestException:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    CampusPortalLogin().login()</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、常见问题解答"><a href="#四、常见问题解答" class="headerlink" title="四、常见问题解答"></a>四、常见问题解答</h2><p>Q1：有没有不办宽带也可以连接校园网的方法<br>A：有一人办卡，全寝共用的方法，但不告诉你。</p>
+<p>Q2：除了发送 GET 请求，还有哪些自动登录技术？<br>A：很多，如浏览器脚本（访问192.168.40.2时自动执行），不过我有一个不同的想法，因为我最近在学嵌入式开发，所以我在想可不可以画一块板子，放两个网口，用单片机获取数据流，捕获DHCP发过来的ip地址，然后就可以发送登录请求包了，有实力的可以试一下。(也是发送GET，可以当做单片机项目来做，方案是可行的，但单片机算力要求高，所以成本会爆炸)</p>
+<h2 id="五、后记"><a href="#五、后记" class="headerlink" title="五、后记"></a>五、后记</h2><p>1.你们可以试试抓包退出登录的数据包，有好玩的，就是不知道你能不能发现，发现了就别乱试，不过好像只有一个寝室内才有用，我还没怎么试不太清除范围。（有没有人帮我做实验）</p>
+<p>2.你们还可以试试抓包“自助服务平台”如图</p>
+<img src="/img/loading.gif" data-original="/img/校园网登录原理分析/进阶1.png" alt="自助服务平台" width="100%">
+
+<img src="/img/loading.gif" data-original="/img/校园网登录原理分析/进阶2.png" alt="自助服务平台" width="100%">
+
+<p>然后实现这个界面（江西应用校园网工具v2.5.0工具的信息界面）</p>
+<img src="/img/loading.gif" data-original="/img/校园网登录原理分析/进阶3.png" alt="江西应用校园网工具v2.5.0用户信息界面" width="100%">
+
+<p>PS 使用代码get登录会有一个验证码问题，而浏览器登录不会，解决有点麻烦。</p>
+<p>温馨提示：本文内容仅用于技术学习交流，请严格遵守学校网络使用规定，勿将技术用于非法用途。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://8.149.137.124">夏次一定de</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://8.149.137.124/2025/10/14/%E6%A0%A1%E5%9B%AD%E7%BD%91%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E5%85%A8%E6%94%BB%E7%95%A5%EF%BC%9A%E4%BB%8E%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E5%88%B0%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0/">http://8.149.137.124/2025/10/14/%E6%A0%A1%E5%9B%AD%E7%BD%91%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E5%85%A8%E6%94%BB%E7%95%A5%EF%BC%9A%E4%BB%8E%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E5%88%B0%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://8.149.137.124" target="_blank">夏次一定de</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/%E6%A0%A1%E5%9B%AD%E7%BD%91%E7%99%BB%E5%BD%95%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/0.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/10/11/hello-world/" title="江西应用校园网工具 v2.5.0 使用说明"><img class="cover" src="/img/loading.gif" data-original="/img/%E6%A0%A1%E5%9B%AD%E7%BD%91%E5%B7%A5%E5%85%B7/%E4%B8%BB%E9%A1%B5%E5%9B%BE.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">江西应用校园网工具 v2.5.0 使用说明</div></div><div class="info-2"><div class="info-item-1">江西应用校园网工具 v2.5.0 使用说明  📄 软件信息软件名称：江西应用校园网工具版本号：v2.5.0开发者：夏次一定de版权声明：2025 夏次一定de. 所有权利保留。 🚀 软件介绍与功能本工具专为江西应用技术职业学院的校园网用户设计，用于实现校园网的全自动登录。 核心功能：  ✅ 自动完成校园网认证登录 ✅ 支持开机自启动（需手动启用） ✅ 登录后程序最小化至系统托盘，安静运行  重要提示：  ⚠️ 本工具仅负责自动登录认证，无法代替物理网络连接 ⚠️ 使用前请确保设备已成功连接到校园网络（Wi-Fi 或 有线网）  🛒 获取与激活购买方式 定价：6元人民币获得永久使用权 价格说明：当前定价为6元，但不保证价格永久不变。如后续价格调整，不提供补退服务 购买渠道： 加入QQ群（校园网工具01群）：385434847 群内查看收款码完成支付 私聊群主或管理员提供订单截图 发送软件激活码    软件下载百度网盘下载：  链接：https://pan.baidu.com/s/14-uCXcbivU71VpLuCzHqgg?pwd=g9aj  提取码: 5m8u  📖 使...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">夏次一定de</div><div class="author-info-description"> 技术宅拯救世界</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com"><i class="fab fa-github"></i><span>关注我</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这是我的博客</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81DR-com-%E6%A0%A1%E5%9B%AD%E7%BD%91%E7%99%BB%E5%BD%95%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">一、DR.com 校园网登录原理分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%95%B0%E6%8D%AE%E5%8C%85%E6%8A%93%E5%8F%96%E4%B8%8E%E5%88%86%E6%9E%90%E5%AE%9E%E6%88%98"><span class="toc-number">2.</span> <span class="toc-text">二、数据包抓取与分析实战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-number">2.1.</span> <span class="toc-text">1. 准备工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%8A%93%E5%8C%85%E6%AD%A5%E9%AA%A4%E8%AF%A6%E8%A7%A3"><span class="toc-number">2.2.</span> <span class="toc-text">2. 抓包步骤详解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%95%B0%E6%8D%AE%E5%8C%85%E8%A7%A3%E6%9E%90"><span class="toc-number">2.3.</span> <span class="toc-text">3. 数据包解析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91"><span class="toc-number">3.</span> <span class="toc-text">三、自动登录程序开发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A%E5%BF%AB%E9%80%9F%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.1.</span> <span class="toc-text">方法一：快速实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0"><span class="toc-number">3.2.</span> <span class="toc-text">方法二：系统学习</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E8%A7%A3%E7%AD%94"><span class="toc-number">4.</span> <span class="toc-text">四、常见问题解答</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%90%8E%E8%AE%B0"><span class="toc-number">5.</span> <span class="toc-text">五、后记</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/10/14/%E6%A0%A1%E5%9B%AD%E7%BD%91%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E5%85%A8%E6%94%BB%E7%95%A5%EF%BC%9A%E4%BB%8E%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E5%88%B0%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0/" title="校园网自动登录全攻略：从原理分析到程序实现"><img src="/img/loading.gif" data-original="/img/%E6%A0%A1%E5%9B%AD%E7%BD%91%E7%99%BB%E5%BD%95%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/0.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="校园网自动登录全攻略：从原理分析到程序实现"/></a><div class="content"><a class="title" href="/2025/10/14/%E6%A0%A1%E5%9B%AD%E7%BD%91%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E5%85%A8%E6%94%BB%E7%95%A5%EF%BC%9A%E4%BB%8E%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E5%88%B0%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0/" title="校园网自动登录全攻略：从原理分析到程序实现">校园网自动登录全攻略：从原理分析到程序实现</a><time datetime="2025-10-14T10:11:06.000Z" title="发表于 2025-10-14 18:11:06">2025-10-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/10/11/hello-world/" title="江西应用校园网工具 v2.5.0 使用说明"><img src="/img/loading.gif" data-original="/img/%E6%A0%A1%E5%9B%AD%E7%BD%91%E5%B7%A5%E5%85%B7/%E4%B8%BB%E9%A1%B5%E5%9B%BE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="江西应用校园网工具 v2.5.0 使用说明"/></a><div class="content"><a class="title" href="/2025/10/11/hello-world/" title="江西应用校园网工具 v2.5.0 使用说明">江西应用校园网工具 v2.5.0 使用说明</a><time datetime="2025-10-11T08:53:51.000Z" title="发表于 2025-10-11 16:53:51">2025-10-11</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2020 - 2025 By 夏次一定de</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.1"></script><script src="/js/main.js?v=5.5.1"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = `%%{init:{ 'theme':'${theme}'}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (false) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.0/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-show-text.min.js" data-mobile="false" data-text="富强,民主,文明,和谐,平等,公正,法治,爱国,敬业,诚信,友善" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
